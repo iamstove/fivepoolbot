@@ -1,10 +1,10 @@
-#include "ExampleAIModule.h"
+#include "fivepool.h"
 #include <iostream>
 
 using namespace BWAPI;
 using namespace Filter;
 
-void ExampleAIModule::onStart()
+void fivepool::onStart()
 {
   // Hello World!
   Broodwar->sendText("Hello world!");
@@ -50,7 +50,7 @@ void ExampleAIModule::onStart()
 
 }
 
-void ExampleAIModule::onEnd(bool isWinner)
+void fivepool::onEnd(bool isWinner)
 {
   // Called when the game ends
   if ( isWinner )
@@ -59,7 +59,7 @@ void ExampleAIModule::onEnd(bool isWinner)
   }
 }
 
-void ExampleAIModule::onFrame()
+void fivepool::onFrame()
 {
   // Called once every game frame
 
@@ -191,7 +191,7 @@ void ExampleAIModule::onFrame()
   } // closure: unit iterator
 }
 
-void ExampleAIModule::onSendText(std::string text)
+void fivepool::onSendText(std::string text)
 {
 
   // Send the text to the game if it is not being processed.
@@ -203,20 +203,20 @@ void ExampleAIModule::onSendText(std::string text)
 
 }
 
-void ExampleAIModule::onReceiveText(BWAPI::Player player, std::string text)
+void fivepool::onReceiveText(BWAPI::Player player, std::string text)
 {
   // Parse the received text
   Broodwar << player->getName() << " said \"" << text << "\"" << std::endl;
 }
 
-void ExampleAIModule::onPlayerLeft(BWAPI::Player player)
+void fivepool::onPlayerLeft(BWAPI::Player player)
 {
   // Interact verbally with the other players in the game by
   // announcing that the other player has left.
   Broodwar->sendText("Goodbye %s!", player->getName().c_str());
 }
 
-void ExampleAIModule::onNukeDetect(BWAPI::Position target)
+void fivepool::onNukeDetect(BWAPI::Position target)
 {
 
   // Check if the target is a valid position
@@ -234,23 +234,23 @@ void ExampleAIModule::onNukeDetect(BWAPI::Position target)
   // You can also retrieve all the nuclear missile targets using Broodwar->getNukeDots()!
 }
 
-void ExampleAIModule::onUnitDiscover(BWAPI::Unit unit)
+void fivepool::onUnitDiscover(BWAPI::Unit unit)
 {
 }
 
-void ExampleAIModule::onUnitEvade(BWAPI::Unit unit)
+void fivepool::onUnitEvade(BWAPI::Unit unit)
 {
 }
 
-void ExampleAIModule::onUnitShow(BWAPI::Unit unit)
+void fivepool::onUnitShow(BWAPI::Unit unit)
 {
 }
 
-void ExampleAIModule::onUnitHide(BWAPI::Unit unit)
+void fivepool::onUnitHide(BWAPI::Unit unit)
 {
 }
 
-void ExampleAIModule::onUnitCreate(BWAPI::Unit unit)
+void fivepool::onUnitCreate(BWAPI::Unit unit)
 {
   if ( Broodwar->isReplay() )
   {
@@ -265,11 +265,11 @@ void ExampleAIModule::onUnitCreate(BWAPI::Unit unit)
   }
 }
 
-void ExampleAIModule::onUnitDestroy(BWAPI::Unit unit)
+void fivepool::onUnitDestroy(BWAPI::Unit unit)
 {
 }
 
-void ExampleAIModule::onUnitMorph(BWAPI::Unit unit)
+void fivepool::onUnitMorph(BWAPI::Unit unit)
 {
   if ( Broodwar->isReplay() )
   {
@@ -284,15 +284,15 @@ void ExampleAIModule::onUnitMorph(BWAPI::Unit unit)
   }
 }
 
-void ExampleAIModule::onUnitRenegade(BWAPI::Unit unit)
+void fivepool::onUnitRenegade(BWAPI::Unit unit)
 {
 }
 
-void ExampleAIModule::onSaveGame(std::string gameName)
+void fivepool::onSaveGame(std::string gameName)
 {
   Broodwar << "The game was saved to \"" << gameName << "\"" << std::endl;
 }
 
-void ExampleAIModule::onUnitComplete(BWAPI::Unit unit)
+void fivepool::onUnitComplete(BWAPI::Unit unit)
 {
 }
