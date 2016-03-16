@@ -1,10 +1,10 @@
-#include "ExampleAIModule.h"
+#include "fivepoolModule.h"
 #include <iostream>
 
 using namespace BWAPI;
 using namespace Filter;
 
-void ExampleAIModule::onStart()
+void fivepoolModule::onStart()
 {
   // Hello World!
   Broodwar->sendText("Hello world!");
