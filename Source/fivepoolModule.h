@@ -3,7 +3,7 @@
 
 // Remember not to use "Broodwar" in any global class constructor!
 
-class fivepoolAIModule : public BWAPI::AIModule
+class fivepoolModule : public BWAPI::AIModule
 {
 public:
   // Virtual functions for callbacks, leave these as they are.
