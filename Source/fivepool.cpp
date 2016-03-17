@@ -104,6 +104,25 @@ void fivepool::onFrame()
     // If the unit is a worker unit
     if ( u->getType().isWorker() )
     {
+		if (buildPool()) { //for building a spawning pool
+			Broodwar->sendText("trying to make a pool");
+			TilePosition targetBuildLocation = Broodwar->getBuildLocation(BWAPI::UnitTypes::Zerg_Spawning_Pool, u->getTilePosition());
+			if (targetBuildLocation)
+			{
+				// Register an event that draws the target build location
+				Broodwar->registerEvent([targetBuildLocation, u](Game*)
+				{
+					Broodwar->drawBoxMap(Position(targetBuildLocation),
+						Position(targetBuildLocation + BWAPI::UnitTypes::Zerg_Spawning_Pool.tileSize()),
+						Colors::Blue);
+				},
+					nullptr,  // condition
+					BWAPI::UnitTypes::Zerg_Spawning_Pool.buildTime() + 100);  // frames to run
+
+				// Order the builder to construct the spawning pool
+				u->build(BWAPI::UnitTypes::Zerg_Spawning_Pool, targetBuildLocation);
+			}
+		}
       // if our worker is idle
       if ( u->isIdle() )
       {
@@ -130,62 +149,69 @@ void fivepool::onFrame()
     {
 	int unit = unitBuild();
       // Order the depot to construct more workers! But only when it is idle.
-      if ( u->isIdle() && !u->train(u->getType().getRace().getWorker()) )
-      {
-        // If that fails, draw the error at the location so that you can visibly see what went wrong!
-        // However, drawing the error once will only appear for a single frame
-        // so create an event that keeps it on the screen for some frames
-        Position pos = u->getPosition();
-        Error lastErr = Broodwar->getLastError();
-        Broodwar->registerEvent([pos,lastErr](Game*){ Broodwar->drawTextMap(pos, "%c%s", Text::White, lastErr.c_str()); },   // action
-                                nullptr,    // condition
-                                Broodwar->getLatencyFrames());  // frames to run
+	if (unit == 0) {
+		if (u->isIdle() && !u->train(u->getType().getRace().getWorker()))
+		{
+			// If that fails, draw the error at the location so that you can visibly see what went wrong!
+			// However, drawing the error once will only appear for a single frame
+			// so create an event that keeps it on the screen for some frames
+			Position pos = u->getPosition();
+			Error lastErr = Broodwar->getLastError();
+			Broodwar->registerEvent([pos, lastErr](Game*){ Broodwar->drawTextMap(pos, "%c%s", Text::White, lastErr.c_str()); },   // action
+				nullptr,    // condition
+				Broodwar->getLatencyFrames());  // frames to run
 
-        // Retrieve the supply provider type in the case that we have run out of supplies
-        UnitType supplyProviderType = u->getType().getRace().getSupplyProvider();
-        static int lastChecked = 0;
+			// Retrieve the supply provider type in the case that we have run out of supplies
+			UnitType supplyProviderType = u->getType().getRace().getSupplyProvider();
+			static int lastChecked = 0;
 
-        // If we are supply blocked and haven't tried constructing more recently
-        if (  lastErr == Errors::Insufficient_Supply &&
-              lastChecked + 400 < Broodwar->getFrameCount() &&
-              Broodwar->self()->incompleteUnitCount(supplyProviderType) == 0 )
-        {
-          lastChecked = Broodwar->getFrameCount();
+			// If we are supply blocked and haven't tried constructing more recently
+			if (lastErr == Errors::Insufficient_Supply &&
+				lastChecked + 400 < Broodwar->getFrameCount() &&
+				Broodwar->self()->incompleteUnitCount(supplyProviderType) == 0)
+			{
+				lastChecked = Broodwar->getFrameCount();
 
-          // Retrieve a unit that is capable of constructing the supply needed
-          Unit supplyBuilder = u->getClosestUnit(  GetType == supplyProviderType.whatBuilds().first &&
-                                                    (IsIdle || IsGatheringMinerals) &&
-                                                    IsOwned);
-          // If a unit was found
-          if ( supplyBuilder )
-          {
-            if ( supplyProviderType.isBuilding() )
-            {
-              TilePosition targetBuildLocation = Broodwar->getBuildLocation(supplyProviderType, supplyBuilder->getTilePosition());
-              if ( targetBuildLocation )
-              {
-                // Register an event that draws the target build location
-                Broodwar->registerEvent([targetBuildLocation,supplyProviderType](Game*)
-                                        {
-                                          Broodwar->drawBoxMap( Position(targetBuildLocation),
-                                                                Position(targetBuildLocation + supplyProviderType.tileSize()),
-                                                                Colors::Blue);
-                                        },
-                                        nullptr,  // condition
-                                        supplyProviderType.buildTime() + 100 );  // frames to run
+				// Retrieve a unit that is capable of constructing the supply needed
+				Unit supplyBuilder = u->getClosestUnit(GetType == supplyProviderType.whatBuilds().first &&
+					(IsIdle || IsGatheringMinerals) &&
+					IsOwned);
+				// If a unit was found
+				if (supplyBuilder)
+				{
+					if (supplyProviderType.isBuilding())
+					{
+						TilePosition targetBuildLocation = Broodwar->getBuildLocation(supplyProviderType, supplyBuilder->getTilePosition());
+						if (targetBuildLocation)
+						{
+							// Register an event that draws the target build location
+							Broodwar->registerEvent([targetBuildLocation, supplyProviderType](Game*)
+							{
+								Broodwar->drawBoxMap(Position(targetBuildLocation),
+									Position(targetBuildLocation + supplyProviderType.tileSize()),
+									Colors::Blue);
+							},
+								nullptr,  // condition
+								supplyProviderType.buildTime() + 100);  // frames to run
 
-                // Order the builder to construct the supply structure
-                supplyBuilder->build( supplyProviderType, targetBuildLocation );
-              }
-            }
-            else
-            {
-              // Train the supply provider (Overlord) if the provider is not a structure
-              supplyBuilder->train( supplyProviderType );
-            }
-          } // closure: supplyBuilder is valid
-        } // closure: insufficient supply
-      } // closure: failed to train idle unit
+							// Order the builder to construct the supply structure
+							supplyBuilder->build(supplyProviderType, targetBuildLocation);
+						}
+					}
+					else
+					{
+						// Train the supply provider (Overlord) if the provider is not a structure
+						supplyBuilder->train(supplyProviderType);
+					}
+				} // closure: supplyBuilder is valid
+			} // closure: insufficient supply
+		} // closure: failed to train idle unit
+	}
+	else if (unit == 1) {
+		if (!u->train(BWAPI::UnitTypes::Zerg_Zergling)) {
+			//Broodwar->sendText("Damn I can't make zerglings");
+		}
+	}
 
     }
 
