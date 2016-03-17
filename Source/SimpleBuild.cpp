@@ -11,4 +11,5 @@ bool buildPool() {
 		poolBuilt = true
 		return true;
 	}
+	return false;
 }
