@@ -1,5 +1,6 @@
 #include "fivepool.h"
 #include <iostream>
+#include "SimpleBuild.cpp"
 
 using namespace BWAPI;
 using namespace Filter;
@@ -127,7 +128,7 @@ void fivepool::onFrame()
     }
     else if ( u->getType().isResourceDepot() ) // A resource depot is a Command Center, Nexus, or Hatchery
     {
-
+	int unit = unitBuild();
       // Order the depot to construct more workers! But only when it is idle.
       if ( u->isIdle() && !u->train(u->getType().getRace().getWorker()) )
       {

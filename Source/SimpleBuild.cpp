@@ -8,8 +8,13 @@ bool buildPool() {
 		return false;
 	}
 	if (BWAPI::Broodwar->self()->supplyUsed() == 5) {
-		poolBuilt = true
+		poolBuilt = true;
 		return true;
 	}
 	return false;
+}
+int unitBuild() {
+	if (BWAPI::Broodwar->self()->supplyUsed() >= 6) {
+
+	}
 }
